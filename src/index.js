@@ -20,7 +20,8 @@ document.addEventListener("DOMContentLoaded", async function() {
 
   // Función para mostrar el mensaje de error
   function showError(message) {
-    Notiflix.Report.failure('Error', message, 'OK');
+    errorDisplay.textContent = message;
+    errorDisplay.style.display = "block";
   }
 
   // Función para ocultar el mensaje de error
@@ -31,7 +32,6 @@ document.addEventListener("DOMContentLoaded", async function() {
   // Función para renderizar la información del gato
   function renderCatInfo(catData) {
     // Implementa la lógica para renderizar la información del gato en el DOM
-    const catInfo = document.querySelector(".cat-info");
     catInfo.style.display = "flex";
     catInfo.style.alignItems = "center";
   
@@ -49,7 +49,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     catInfo.innerHTML = "";
 
     // Agrega los elementos creados al elemento catInfo para mostrar la información
-  
     catInfo.appendChild(imageElement);
     catInfo.appendChild(textElement);
   }
@@ -57,34 +56,39 @@ document.addEventListener("DOMContentLoaded", async function() {
   try {
     showLoader();
     const breeds = await fetchBreeds();
-    const breedOptions = breeds.map(breed => ({ text: breed.name, value: breed.id }));
 
-    // Inicializa SlimSelect después de obtener la lista de razas de gatos
-    const slim = new SlimSelect(".breed-select", {
-      placeholder: 'Select a breed',
-      allowDeselect: true,
-      onChange: async (val) => {
-        showLoader();
-        hideError(); // Oculta cualquier mensaje de error anterior
-        try {
-          const catData = await fetchCatByBreed(val);
-          renderCatInfo(catData);
-        } catch (error) {
-          showError("Error fetching cat information. Please try again later.");
-        } finally {
-          hideLoader();
-        }
-      }
-    });
-
-    // Verifica si SlimSelect se ha inicializado correctamente
-    if (slim && slim instanceof SlimSelect) {
-      slim.setData(breedOptions);
+    // Verifica si hay datos de razas de gatos
+    if (breeds.length === 0) {
+      showError("No cat breeds found.");
     } else {
-      console.error("SlimSelect is not properly initialized.");
+      const breedOptions = breeds.map(breed => ({ text: breed.name, value: breed.id }));
+      // Inicializa SlimSelect después de obtener la lista de razas de gatos
+      const slim = new SlimSelect(".breed-select", {
+        placeholder: 'Select a breed',
+        allowDeselect: true,
+        onChange: async (val) => {
+          showLoader();
+          hideError(); // Oculta cualquier mensaje de error anterior
+          try {
+            const catData = await fetchCatByBreed(val);
+            renderCatInfo(catData);
+          } catch (error) {
+            showError("Error fetching cat information. Please try again later.");
+          } finally {
+            hideLoader();
+          }
+        }
+      });
+
+      // Verifica si SlimSelect se ha inicializado correctamente
+      if (slim && slim instanceof SlimSelect) {
+        slim.setData(breedOptions);
+      } else {
+        console.error("SlimSelect is not properly initialized.");
+      }
     }
   } catch (error) {
-    showError("Error fetching cat breeds. Please try again later.");
+    showError(" ");
   } finally {
     hideLoader();
   }

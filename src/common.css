@@ -1,0 +1,15 @@
+.cat-info .container {
+    display: flex;
+    align-items: center; /* Alinea verticalmente los elementos */
+    padding: 20px;
+}
+  
+.cat-info img {
+    max-width: 50%; /* La imagen ocupará la mitad del espacio */
+}
+  
+  
+.cat-info .text {
+    flex: 1; /* El texto ocupará todo el espacio restante */
+    padding-right: 20px; /* Espacio entre la imagen y el texto */
+}
