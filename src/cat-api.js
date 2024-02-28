@@ -66,4 +66,4 @@ fetchBreeds()
     console.error('Error al obtener las razas de gatos:', error);
   });
 
-export { fetchCatByBreed };
+export { fetchBreeds, fetchCatByBreed };
