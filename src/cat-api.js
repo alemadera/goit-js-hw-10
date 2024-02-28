@@ -1,16 +1,16 @@
 import axios from "axios";
 
-// Establecer la clave API en la cabecera por defecto para todas las solicitudes
+// Establece la clave API en la cabecera por defecto para todas las solicitudes
 axios.defaults.headers.common["x-api-key"] = "live_4GKnCRc94j14SLqeuAx178No8qXxKhrRbjCZ6r6XXS55HTVdY9VXpePMhiK1EhuN";
 
 // Función para hacer una petición HTTP GET a la API de The Cat API para obtener la colección de razas
 async function fetchBreeds() {
   try {
     const response = await axios.get('https://api.thecatapi.com/v1/breeds');
-    return response.data; // Devolver el array de razas
+    return response.data; // Devuelve el array de razas
   } catch (error) {
     console.error('Error:', error);
-    throw error; // Propagar el error
+    throw error; // Propaga el error
   }
 }
 
@@ -27,14 +27,14 @@ async function fetchCatByBreed(breedId) {
     };
   } catch (error) {
     console.error('Error:', error);
-    throw error; // Propagar el error
+    throw error; // Propaga el error
   }
 }
 
-// Ejemplo de uso de la función fetchBreeds
+
 fetchBreeds()
   .then(breeds => {
-    // Hacer algo con el array de razas, por ejemplo, rellenar un select
+    // rellena un select
     const select = document.querySelector('.breed-select');
     breeds.forEach(breed => {
       const option = document.createElement('option');
@@ -43,12 +43,12 @@ fetchBreeds()
       select.appendChild(option);
     });
 
-    // Manejar el cambio en el select de razas
+    // Maneja el cambio en el select de razas
     select.addEventListener('change', async (event) => {
       const breedId = event.target.value;
       try {
         const catData = await fetchCatByBreed(breedId);
-        // Mostrar información del gato en el bloque .cat-info
+        // Mostra información del gato en el bloque .cat-info
         const catInfo = document.querySelector('.cat-info');
         catInfo.innerHTML = `
           <h2>${catData.breedName}</h2>
@@ -62,7 +62,7 @@ fetchBreeds()
     });
   })
   .catch(error => {
-    // Manejar errores de la petición
+    // Maneja errores de la petición
     console.error('Error al obtener las razas de gatos:', error);
   });
 

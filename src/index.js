@@ -61,21 +61,29 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (breeds.length === 0) {
       showError("No cat breeds found.");
     } else {
-      const breedOptions = breeds.map(breed => ({ text: breed.name, value: breed.id }));
+      // Agrega "Choose a breed" como la primera opción en la lista de razas de gatos
+      const breedOptions = [{ text: "Choose a breed", value: "" }, ...breeds.map(breed => ({ text: breed.name, value: breed.id }))];
+
       // Inicializa SlimSelect después de obtener la lista de razas de gatos
       const slim = new SlimSelect(".breed-select", {
-        placeholder: 'Select a breed',
+        placeholder: 'Choose a breed',
         allowDeselect: true,
+        deselectLabel: '',
+        data: breedOptions,
         onChange: async (val) => {
-          showLoader();
-          hideError(); // Oculta cualquier mensaje de error anterior
-          try {
-            const catData = await fetchCatByBreed(val);
-            renderCatInfo(catData);
-          } catch (error) {
-            showError("Error fetching cat information. Please try again later.");
-          } finally {
-            hideLoader();
+          if (val){
+            showLoader();
+            hideError(); // Oculta cualquier mensaje de error anterior
+            try {
+              const catData = await fetchCatByBreed(val);
+              renderCatInfo(catData);
+            } catch (error) {
+              showError("Error fetching cat information. Please try again later.");
+            } finally {
+              hideLoader();
+            }
+          } else {
+            catInfo.style.display = "none";
           }
         }
       });
@@ -83,6 +91,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       // Verifica si SlimSelect se ha inicializado correctamente
       if (slim && slim instanceof SlimSelect) {
         slim.setData(breedOptions);
+        slim.set(""); // Deselecciona cualquier valor seleccionado por defecto
       } else {
         console.error("SlimSelect is not properly initialized.");
       }
